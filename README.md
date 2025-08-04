@@ -1,155 +1,134 @@
-# FocusFlow Landing Page
+# Docker 101
 
-A modern, responsive landing page for FocusFlow - a productivity app built with Next.js, React, and Tailwind CSS.
-
-## 🚀 Features
-
-- **Modern Design**: Clean, professional design with gradient backgrounds and smooth animations
-- **Responsive**: Fully responsive design that works on all devices
-- **Fast Performance**: Built with Next.js for optimal performance
-- **SEO Optimized**: Proper metadata and semantic HTML structure
-- **Accessible**: Follows accessibility best practices
-
-## 🛠️ Tech Stack
-
-- **Next.js 15** - React framework with App Router
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first CSS framework
-- **ESLint** - Code linting
-
-## 📁 Project Structure
-
-```
-focusflow-landing/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx      # Root layout with metadata
-│   │   ├── page.tsx        # Main landing page
-│   │   └── globals.css     # Global styles
-│   └── ...
-├── public/                 # Static assets
-├── package.json
-└── README.md
-```
-
-## 🎨 Design Sections
-
-1. **Navigation Bar** - Sticky header with logo and navigation links
-2. **Hero Section** - Main headline with call-to-action buttons
-3. **Features Section** - Three key features with icons
-4. **Testimonials** - Customer testimonials with profile images
-5. **Call-to-Action** - Final conversion section
-6. **Footer** - Links and company information
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-- Docker (optional, for containerized deployment)
-
-### Installation
-
-#### Option 1: Local Development
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd focusflow-landing
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-#### Option 2: Docker Deployment
-
-1. Build and run with Docker Compose:
-```bash
-docker-compose up --build
-```
-
-2. Or build and run with Docker directly:
-```bash
-# Build the image
-docker build -t focusflow-landing .
-
-# Run the container
-docker run -p 3000:3000 focusflow-landing
-```
-
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📝 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## 🎯 Customization
-
-### Colors
-The design uses a blue/indigo color scheme. You can customize colors in the Tailwind classes:
-- Primary: `indigo-600`
-- Secondary: `gray-900`
-- Background: `blue-50` to `indigo-100`
-
-### Content
-Update the content in `src/app/page.tsx`:
-- Company name and taglines
-- Feature descriptions
-- Testimonial content
-- Contact information
-
-### Images
-The landing page uses Unsplash images. You can replace them with your own images by:
-1. Adding images to the `public/` folder
-2. Updating the `src` attributes in the Image components
-
-## 🌟 Key Features
-
-- **Sticky Navigation** - Navigation bar stays at the top when scrolling
-- **Smooth Scrolling** - Anchor links provide smooth scrolling to sections
-- **Hover Effects** - Interactive elements with hover states
-- **Mobile Responsive** - Optimized for all screen sizes
-- **Performance Optimized** - Images are optimized with Next.js Image component
-
-## 📱 Responsive Breakpoints
-
-- Mobile: < 768px
-- Tablet: 768px - 1024px  
-- Desktop: > 1024px
-
-## 🔧 Deployment
-
-This project can be deployed to:
-- **Vercel** (recommended for Next.js)
-- **Netlify**
-- **AWS Amplify**
-- Any static hosting service
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+A simple landing page project to demonstrate basic Docker usage: building, running, and pushing a Docker image.
 
 ---
 
-Built with ❤️ using Next.js and Tailwind CSS
+## � What's in the Dockerfile?
+This repo includes a `Dockerfile` with:
+- A base image suitable for the landing page app
+- Source code copied into the image
+- Installation of dependencies
+- Exposing a port for the application
+- A `CMD` or `ENTRYPOINT` to start the app
+
+**See sample Dockerfile:**  
+![image3](3.PNG)  
+![image4](4.PNG)  
+
+---
+
+## 🚫 What is `.dockerignore`?
+`.dockerignore` in this repo excludes unnecessary files from the build context to keep your image small and efficient, such as:
+- `node_modules/`
+- `__pycache__/`
+- `.git/`
+- `*.log`
+
+**See sample dockerignore file:**  
+![image5](5.PNG)  
+
+---
+
+## 📝 Docker Compose
+
+The repository includes a `docker-compose.yml` file for orchestrating your Docker containers:
+
+- **Service**: `focusflow-landing`
+- Builds from the local `Dockerfile`
+- Maps port `3000:3000`
+- Sets environment variables for production and disables Next.js telemetry
+- Implements a healthcheck by calling `/api/health` endpoint with curl, with retries and intervals for robust monitoring
+- Uses `restart: unless-stopped` to keep the service running
+
+**See docker-compose.yml:**  
+![image2](2.PNG)  
+
+---
+
+## 📊 Viewing Docker Containers
+
+Once you run your container, you can view its status, resource usage, and details (like name, ports, and image) in your Docker dashboard or CLI.
+
+**Example (from Docker dashboard):**  
+- Container name: `boring_edison`
+- Image: `focusflow-landing`
+- Ports mapped: `3000:3000`
+- CPU usage: 0%
+- Last started: 33 seconds ago
+
+**See running container:**  
+![image1](Capture.PNG)  
+
+---
+
+## 🔨 How to Build the Docker Image
+
+Run the following command from your project directory:
+```bash
+docker build -t mydocker101-app .
+```
+
+---
+
+## ▶ How to Run the Docker Container
+
+```bash
+docker run -p 8080:8080 mydocker101-app
+```
+_You may need to adjust the port depending on what your app exposes in the Dockerfile._
+
+---
+
+## ☁ How to Push to Docker Hub
+
+1. *Login to Docker Hub:*
+   ```bash
+   docker login
+   ```
+
+2. *Tag your image:*
+   ```bash
+   docker tag mydocker101-app your-dockerhub-username/mydocker101-app
+   ```
+
+3. *Push your image:*
+   ```bash
+   docker push your-dockerhub-username/mydocker101-app
+   ```
+
+---
+
+## 🌍 How can someone use this image from Docker Hub?
+
+1. **Pull the image from Docker Hub:**
+   ```bash
+   docker pull your-dockerhub-username/mydocker101-app
+   ```
+   *(Replace `your-dockerhub-username` with your actual Docker Hub username.)*
+
+2. **Run a container using the image:**
+   ```bash
+   docker run -p 8080:8080 your-dockerhub-username/mydocker101-app
+   ```
+   - This starts a container from your image.
+   - The `-p 8080:8080` flag maps port 8080 of the container to port 8080 on your machine (adjust the port if your app uses a different one).
+
+3. **Access the application:**
+   - Open a browser and go to [http://localhost:8080](http://localhost:8080) (or the mapped port) to use the app.
+
+---
+
+## ✅ Done!
+
+You've built, run, pushed, and shared a Docker image using your own repo.
+Explore further with multi-stage builds, volumes, and Docker Compose!
+
+---
+
+### 🧑‍� Author & Learning
+
+This project was dockerized by myself as part of my Docker learning journey.
+I learnt Docker fundamentals from [KodeKloud](https://kodekloud.com/) guided by [Mumshad Mannambeth](https://www.linkedin.com/in/mmumshad/?originalSubdomain=sg).
+
+---
