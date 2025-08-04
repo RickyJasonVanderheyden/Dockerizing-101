@@ -1,10 +1,4 @@
-# Docker 101
-
-A simple landing page project to demonstrate basic Docker usage: building, running, and pushing a Docker image.
-
----
-
-## 📦 What's in the Dockerfile?
+# Dock## 📦 What's in the Dockerfile?
 This project uses a **multi-stage Docker build** for the Next.js application with the following stages:
 
 **Stage 1 - Base:** Uses Node.js 18 Alpine as the foundation
@@ -19,7 +13,21 @@ This project uses a **multi-stage Docker build** for the Next.js application wit
 
 **My actual Dockerfile screenshots:**  
 ![My Dockerfile Part 1](./images/3.PNG)  
-![My Dockerfile Part 2](./images/4.PNG)  
+![My Dockerfile Part 2](./images/4.PNG)imple landing page project to demonstrate basic Docker usage: building, running, and pushing a Docker image.
+
+---
+
+## � What's in the Dockerfile?
+This repo includes a `Dockerfile` with:
+- A base image suitable for the landing page app
+- Source code copied into the image
+- Installation of dependencies
+- Exposing a port for the application
+- A `CMD` or `ENTRYPOINT` to start the app
+
+**See sample Dockerfile:**  
+![Dockerfile Part 1](./images/3.PNG)  
+![Dockerfile Part 2](./images/4.PNG)  
 
 ---
 
@@ -166,7 +174,7 @@ Explore further with multi-stage builds, volumes, and Docker Compose!
 
 ---
 
-### 🧑‍💻 Author & Learning
+### 🧑‍� Author & Learning
 
 This project was dockerized by myself as part of my Docker learning journey.
 I learnt Docker fundamentals from [KodeKloud](https://kodekloud.com/) guided by [Mumshad Mannambeth](https://www.linkedin.com/in/mmumshad/?originalSubdomain=sg).
