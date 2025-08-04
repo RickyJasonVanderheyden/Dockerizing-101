@@ -1,6 +1,19 @@
-# Docker 101
+# Dock## 📦 What's in the Dockerfile?
+This project uses a **multi-stage Docker build** for the Next.js application with the following stages:
 
-A simple landing page project to demonstrate basic Docker usage: building, running, and pushing a Docker image.
+**Stage 1 - Base:** Uses Node.js 18 Alpine as the foundation
+**Stage 2 - Dependencies:** Installs npm dependencies with libc6-compat for Alpine compatibility
+**Stage 3 - Builder:** Builds the Next.js application with telemetry disabled
+**Stage 4 - Runner:** Creates the production image with:
+- Node.js production environment
+- Non-root user (nextjs) for security
+- Standalone output for optimized performance
+- Exposes port 3000
+- Runs the built application with `node server.js`
+
+**My actual Dockerfile screenshots:**  
+![My Dockerfile Part 1](./images/3.PNG)  
+![My Dockerfile Part 2](./images/4.PNG)imple landing page project to demonstrate basic Docker usage: building, running, and pushing a Docker image.
 
 ---
 
@@ -13,109 +26,144 @@ This repo includes a `Dockerfile` with:
 - A `CMD` or `ENTRYPOINT` to start the app
 
 **See sample Dockerfile:**  
-![image3](3.PNG)  
-![image4](4.PNG)  
+![Dockerfile Part 1](./images/3.PNG)  
+![Dockerfile Part 2](./images/4.PNG)  
 
 ---
 
 ## 🚫 What is `.dockerignore`?
-`.dockerignore` in this repo excludes unnecessary files from the build context to keep your image small and efficient, such as:
-- `node_modules/`
-- `__pycache__/`
-- `.git/`
-- `*.log`
+My `.dockerignore` file excludes specific files and directories from the Docker build context to optimize build performance and reduce image size. 
 
-**See sample dockerignore file:**  
-![image5](5.PNG)  
+**Files excluded in my project:**
+- `Dockerfile` and `.dockerignore` (meta files)
+- `node_modules/` (dependencies will be installed fresh)
+- `npm-debug.log` (debug logs)
+- `README.md` (documentation not needed in container)
+- Environment files (`.env*`) for security
+- Git files (`.git/`, `.gitignore`)
+- Next.js build artifacts (`.next/`, `.vercel/`)
+- TypeScript build info (`*.tsbuildinfo`)
 
----
-
-## 📝 Docker Compose
-
-The repository includes a `docker-compose.yml` file for orchestrating your Docker containers:
-
-- **Service**: `focusflow-landing`
-- Builds from the local `Dockerfile`
-- Maps port `3000:3000`
-- Sets environment variables for production and disables Next.js telemetry
-- Implements a healthcheck by calling `/api/health` endpoint with curl, with retries and intervals for robust monitoring
-- Uses `restart: unless-stopped` to keep the service running
-
-**See docker-compose.yml:**  
-![image2](2.PNG)  
+**My actual .dockerignore file:**  
+![My Dockerignore File](./images/5.PNG)  
 
 ---
 
-## 📊 Viewing Docker Containers
+## 📝 Docker Compose Configuration
 
-Once you run your container, you can view its status, resource usage, and details (like name, ports, and image) in your Docker dashboard or CLI.
+My `docker-compose.yml` file orchestrates the FocusFlow landing page application with the following configuration:
 
-**Example (from Docker dashboard):**  
-- Container name: `boring_edison`
-- Image: `focusflow-landing`
-- Ports mapped: `3000:3000`
-- CPU usage: 0%
-- Last started: 33 seconds ago
+**Service Details:**
+- **Service Name**: `focusflow-landing`
+- **Build Context**: Current directory with local Dockerfile
+- **Port Mapping**: `3000:3000` (host:container)
+- **Environment Variables**: 
+  - `NODE_ENV=production` for optimized performance
+  - `NEXT_TELEMETRY_DISABLED=1` to disable Next.js data collection
+- **Restart Policy**: `unless-stopped` ensures container restarts automatically
+- **Health Check**: 
+  - Tests: `curl -f http://localhost:3000/api/health`
+  - Interval: Every 30 seconds
+  - Timeout: 10 seconds per check
+  - Retries: 3 attempts before marking unhealthy
+  - Start Period: 40 seconds initial grace period
 
-**See running container:**  
-![image1](Capture.PNG)  
+**My actual docker-compose.yml file:**  
+![My Docker Compose File](./images/2.PNG)  
 
 ---
 
-## 🔨 How to Build the Docker Image
+## 📊 My Running Docker Container
 
-Run the following command from your project directory:
+Here's my actual FocusFlow landing page application running in a Docker container. The screenshot shows the container status and details from Docker Desktop dashboard.
+
+**Container Details Visible:**
+- Container name and ID
+- Image: Built from my local `focusflow-landing` Dockerfile
+- Port mapping: `3000:3000` 
+- Resource usage (CPU, Memory)
+- Container status and uptime
+- Network configuration
+
+**My running container screenshot:**  
+![My Running Container Dashboard](./images/Capture.PNG)  
+
+---
+
+## 🔨 How to Build My Docker Image
+
+To build the FocusFlow landing page Docker image from my Dockerfile:
+
 ```bash
-docker build -t mydocker101-app .
+docker build -t focusflow-landing .
 ```
 
+This command:
+- Uses the multi-stage Dockerfile in the current directory
+- Creates an optimized production image with Next.js standalone output
+- Tags the image as `focusflow-landing`
+
 ---
 
-## ▶ How to Run the Docker Container
+## ▶ How to Run My Docker Container
 
+### Option 1: Using Docker directly
 ```bash
-docker run -p 8080:8080 mydocker101-app
+docker run -p 3000:3000 focusflow-landing
 ```
-_You may need to adjust the port depending on what your app exposes in the Dockerfile._
+
+### Option 2: Using Docker Compose (Recommended)
+```bash
+docker-compose up
+```
+
+Both commands will:
+- Start the FocusFlow landing page application
+- Map port 3000 from container to host
+- Enable the health check endpoint at `/api/health`
+- Access the app at [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ☁ How to Push to Docker Hub
+## ☁ How to Push My Image to Docker Hub
 
-1. *Login to Docker Hub:*
+1. **Login to Docker Hub:**
    ```bash
    docker login
    ```
 
-2. *Tag your image:*
+2. **Tag my image for Docker Hub:**
    ```bash
-   docker tag mydocker101-app your-dockerhub-username/mydocker101-app
+   docker tag focusflow-landing your-dockerhub-username/focusflow-landing
    ```
 
-3. *Push your image:*
+3. **Push my image:**
    ```bash
-   docker push your-dockerhub-username/mydocker101-app
+   docker push your-dockerhub-username/focusflow-landing
    ```
 
 ---
 
-## 🌍 How can someone use this image from Docker Hub?
+## 🌍 How to Use My Published Image
 
-1. **Pull the image from Docker Hub:**
+Once published to Docker Hub, others can use my FocusFlow landing page image:
+
+1. **Pull my image from Docker Hub:**
    ```bash
-   docker pull your-dockerhub-username/mydocker101-app
+   docker pull your-dockerhub-username/focusflow-landing
    ```
-   *(Replace `your-dockerhub-username` with your actual Docker Hub username.)*
 
-2. **Run a container using the image:**
+2. **Run a container from my image:**
    ```bash
-   docker run -p 8080:8080 your-dockerhub-username/mydocker101-app
+   docker run -p 3000:3000 your-dockerhub-username/focusflow-landing
    ```
-   - This starts a container from your image.
-   - The `-p 8080:8080` flag maps port 8080 of the container to port 8080 on your machine (adjust the port if your app uses a different one).
+   - Starts the FocusFlow Next.js application
+   - Maps port 3000 (the port my app exposes)
+   - Runs with production optimizations
 
-3. **Access the application:**
-   - Open a browser and go to [http://localhost:8080](http://localhost:8080) (or the mapped port) to use the app.
+3. **Access the FocusFlow landing page:**
+   - Open [http://localhost:3000](http://localhost:3000) to view the application
+   - Health check available at [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
 ---
 
